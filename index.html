@@ -1,3 +1,6 @@
+为了在移动设备上实现触摸滑动图片，你需要为 `touchstart`, `touchmove` 和 `touchend` 事件添加监听器。可以将这些事件的处理逻辑与现有的鼠标事件处理逻辑结合在一起。下面是修改后的代码：
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,6 +89,7 @@
         const carousel = document.getElementById('carousel');
         const content = carousel.querySelector('.content');
 
+        // 鼠标事件
         carousel.addEventListener('mousedown', (e) => {
             startX = e.clientX;
             isDragging = true;
@@ -108,6 +112,31 @@
                 carousel.style.cursor = 'grab';
             }
         });
+
+        // 触摸事件
+        carousel.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                currentX = e.touches[0].clientX;
+                const deltaX = currentX - startX;
+                angle += deltaX * 0.1; // 调整0.1来控制旋转速度
+                content.style.transform = `translateZ(-30vw) rotateY(${angle}deg)`;
+                startX = currentX;
+            }
+        });
+
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+            }
+        });
     </script>
 </body>
 </html>
+```
+
+以上代码添加了触摸事件处理器 (`touchstart`, `touchmove`, `touchend`) 来支持在移动设备上通过滑动手势旋转图片。这样，你在移动设备上也可以通过滑动手势来控制图片的旋转。
